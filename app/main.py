@@ -60,8 +60,17 @@ def move():
     """
     print(json.dumps(data))
 
-    directions = ['up', 'down', 'left', 'right']
-    direction = random.choice(directions)
+    turn = data.get("turn")
+
+    pick = turn % 4
+    if pick == 0:
+        direction = 'up'
+    elif pick == 1:
+        direction = 'right'
+    elif pick == 2:
+        direction = 'down'
+    else:
+        direction = 'left'
 
     return move_response(direction)
 
