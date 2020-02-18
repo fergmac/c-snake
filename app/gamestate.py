@@ -24,11 +24,12 @@ def right(coord):
 
 
 class Snake:
-    def __init__(self, snake_data):
+    def __init__(self, snake_data, is_you=False):
         self.id = snake_data["id"]
         self.name = snake_data["name"]
         self.health = snake_data["health"]
         self.body = [(body_data["x"], body_data["y"]) for body_data in snake_data["body"]]
+        self.is_you = is_you
 
     def get_head(self):
         return self.body[0]
@@ -54,7 +55,7 @@ class GameState:
     def __init__(self, data):
         self.turn = data["turn"]
         self.board = Board(data["board"])
-        self.you = Snake(data["you"])
+        self.you = Snake(data["you"], True)
         self.snakes = [Snake(snake) for snake in data["board"]["snakes"]]
         self.food = [(food["x"], food["y"]) for food in data["board"]["food"]]
 
@@ -69,15 +70,16 @@ class GameState:
                     invalid_spaces.append(body)
 
             # TODO - Do this better
-            head = snake.get_head()
-            if left(head) not in invalid_spaces:
-                invalid_spaces.append(left(head))
-            if right(head) not in invalid_spaces:
-                invalid_spaces.append(right(head))
-            if up(head) not in invalid_spaces:
-                invalid_spaces.append(up(head))
-            if down(head) not in invalid_spaces:
-                invalid_spaces.append(down(head))
+            if not snake.is_you():
+                head = snake.get_head()
+                if left(head) not in invalid_spaces:
+                    invalid_spaces.append(left(head))
+                if right(head) not in invalid_spaces:
+                    invalid_spaces.append(right(head))
+                if up(head) not in invalid_spaces:
+                    invalid_spaces.append(up(head))
+                if down(head) not in invalid_spaces:
+                    invalid_spaces.append(down(head))
 
         return invalid_spaces
 
