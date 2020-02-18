@@ -7,28 +7,20 @@ class Board:
         self.width = board_data["width"]
 
 
-class Coordinate:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+def up(coord):
+    return coord[0], coord[1] - 1
 
-    def __repr__(self):
-        return f"({self.x}, {self.y})"
 
-    def as_tuple(self):
-        return self.x, self.y
+def down(coord):
+    return coord[0], coord[1] + 1
 
-    def up(self):
-        return Coordinate(self.x, self.y - 1)
 
-    def down(self):
-        return Coordinate(self.x, self.y + 1)
+def left(coord):
+    return coord[0] - 1, coord[1]
 
-    def left(self):
-        return Coordinate(self.x - 1, self.y)
 
-    def right(self):
-        return Coordinate(self.x + 1, self.y)
+def right(coord):
+    return coord[0] + 1, coord[1]
 
 
 class Snake:
@@ -36,7 +28,7 @@ class Snake:
         self.id = snake_data["id"]
         self.name = snake_data["name"]
         self.health = snake_data["health"]
-        self.body = [Coordinate(body_data["x"], body_data["y"]) for body_data in snake_data["body"]]
+        self.body = [(body_data["x"], body_data["y"]) for body_data in snake_data["body"]]
 
     def get_head(self):
         return self.body[0]
@@ -64,7 +56,7 @@ class GameState:
         self.board = Board(data["board"])
         self.you = Snake(data["you"])
         self.snakes = [Snake(snake) for snake in data["board"]["snakes"]]
-        self.food = [Coordinate(food["x"], food["y"]) for food in data["board"]["food"]]
+        self.food = [(food["x"], food["y"]) for food in data["board"]["food"]]
 
         self.invalid_spaces = self.populate_invalid_spaces()
 
@@ -73,19 +65,19 @@ class GameState:
         invalid_spaces = []
         for snake in self.snakes:
             for body in snake.body:
-                if not any(space.x == body.x and space.y == body.y for space in invalid_spaces) and \
-                        not body == snake.get_tail():
+                if body not in invalid_spaces and body != self.you.get_tail():
                     invalid_spaces.append(body)
+
             # TODO - Do this better
             head = snake.get_head()
-            if not any(space.x == head.left().x and space.y == head.left().y for space in invalid_spaces):
-                invalid_spaces.append(head.left())
-            if not any(space.x == head.right().x and space.y == head.right().y for space in invalid_spaces):
-                invalid_spaces.append(head.right())
-            if not any(space.x == head.up().x and space.y == head.up().y for space in invalid_spaces):
-                invalid_spaces.append(head.up())
-            if not any(space.x == head.down().x and space.y == head.down().y for space in invalid_spaces):
-                invalid_spaces.append(head.down())
+            if left(head) not in invalid_spaces:
+                invalid_spaces.append(left(head))
+            if right(head) not in invalid_spaces:
+                invalid_spaces.append(right(head))
+            if up(head) not in invalid_spaces:
+                invalid_spaces.append(up(head))
+            if down(head) not in invalid_spaces:
+                invalid_spaces.append(down(head))
 
         return invalid_spaces
 
@@ -111,20 +103,24 @@ class GameState:
         return self.determine_route_to_target(self.you.get_tail()).direction
 
     def determine_route_to_target(self, target):
-        print(f"\nInvalid spaces: {[space.as_tuple() for space in self.invalid_spaces]}"
+        print(f"\nInvalid spaces: {self.invalid_spaces}"
               f"\nWidth: {self.board.width}",
               f"\nHeight: {self.board.height}",
-              f"\nStart: {self.you.get_head().as_tuple()}",
-              f"\nTarget: {target.as_tuple()}\n")
+              f"\nStart: {self.you.get_head()}",
+              f"\nTarget: {target}\n")
         route = astar(
-            invalid_spaces=[space.as_tuple() for space in self.invalid_spaces],
+            invalid_spaces=self.invalid_spaces,
             width=self.board.width,
             height=self.board.height,
-            start=self.you.get_head().as_tuple(),
-            end=target.as_tuple()
+            start=self.you.get_head(),
+            end=target
         )
 
         print(f"\nRoute found: {route}\n")
+        if not route:
+            print("Something went wrong!")
+            return Move(Move.UP, self.NO_PATH)
+
         distance = len(route) if route else self.NO_PATH
 
         x_diff = route[1][0] - route[0][0]
@@ -139,5 +135,5 @@ class GameState:
         elif x_diff == 0 and y_diff == 1:
             return Move(Move.DOWN, distance)
         else:
-            print("FUCK WHAT DO WE DO")
+            print("Something went wrong!")
             return Move(Move.UP, self.NO_PATH)

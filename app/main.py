@@ -64,7 +64,7 @@ def move():
 
     game_state = GameState(data)
 
-    if game_state.you.health > 50:
+    if game_state.turn > 2 and game_state.you.health > 50:
         direction = game_state.move_to_tail()
     else:
         direction = game_state.move_to_closest_food()
