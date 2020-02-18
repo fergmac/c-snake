@@ -19,19 +19,16 @@ class Coordinate:
         return self.x, self.y
 
     def up(self):
-        return self.x, self.y - 1
+        return Coordinate(self.x, self.y - 1)
 
     def down(self):
-        return self.x, self.y + 1
+        return Coordinate(self.x, self.y + 1)
 
     def left(self):
-        return self.x - 1, self.y
+        return Coordinate(self.x - 1, self.y)
 
     def right(self):
-        return self.x + 1, self.y
-
-class SnakeBody(Coordinate):
-    pass
+        return Coordinate(self.x + 1, self.y)
 
 
 class Snake:
@@ -39,17 +36,13 @@ class Snake:
         self.id = snake_data["id"]
         self.name = snake_data["name"]
         self.health = snake_data["health"]
-        self.body = [SnakeBody(body_data["x"], body_data["y"]) for body_data in snake_data["body"]]
+        self.body = [Coordinate(body_data["x"], body_data["y"]) for body_data in snake_data["body"]]
 
     def get_head(self):
         return self.body[0]
 
     def get_tail(self):
         return self.body[-1]
-
-
-class Food(Coordinate):
-    pass
 
 class Move:
     UP = "up"
@@ -68,7 +61,7 @@ class GameState:
         self.board = Board(data["board"])
         self.you = Snake(data["you"])
         self.snakes = [Snake(snake) for snake in data["board"]["snakes"]]
-        self.food = [Food(food["x"], food["y"]) for food in data["board"]["food"]]
+        self.food = [Coordinate(food["x"], food["y"]) for food in data["board"]["food"]]
 
         self.invalid_spaces = self.populate_invalid_spaces()
 
@@ -77,17 +70,17 @@ class GameState:
         invalid_spaces = []
         for snake in self.snakes:
             for body in snake.body:
-                if body not in invalid_spaces:
+                if not any(space.x == body.x and space.y == body.y for space in invalid_spaces):
                     invalid_spaces.append(body)
             # TODO - Do this better
             head = snake.get_head()
-            if head.left() not in invalid_spaces:
+            if not any(space.x == head.left().x and space.y == head.left().y for space in invalid_spaces):
                 invalid_spaces.append(head.left())
-            if head.right() not in invalid_spaces:
+            if not any(space.x == head.right().x and space.y == head.right().y for space in invalid_spaces):
                 invalid_spaces.append(head.right())
-            if head.up() not in invalid_spaces:
+            if not any(space.x == head.up().x and space.y == head.up().y for space in invalid_spaces):
                 invalid_spaces.append(head.up())
-            if head.down() not in invalid_spaces:
+            if not any(space.x == head.down().x and space.y == head.down().y for space in invalid_spaces):
                 invalid_spaces.append(head.down())
 
         return invalid_spaces
