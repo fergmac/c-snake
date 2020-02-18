@@ -64,12 +64,16 @@ def move():
 
     game_state = GameState(data)
 
-    direction = game_state.move_to_food()
+    if game_state.you.health > 50:
+        direction = game_state.move_to_tail()
+    else:
+        direction = game_state.move_to_closest_food()
+
     print(f"\nDirection selected: {direction}\n")
 
     end_time = int(round(time.time() * 1000))
     duration = end_time - start_time
-    print(f"\n Time elapsed (ms): f{duration}\n")
+    print(f"\n Time elapsed (ms): {duration}\n")
     return move_response(direction)
 
 
