@@ -96,7 +96,7 @@ class GameState:
 
         for food in self.food:
             possible_move = self.determine_route_to_target(food)
-            if not best_move or possible_move.distance < best_move:
+            if not best_move or possible_move.distance < best_move.distance:
                 best_move = possible_move
 
         return best_move.direction
