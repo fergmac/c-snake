@@ -2,7 +2,8 @@ import json
 import os
 import bottle
 
-from .api import ping_response, start_response, move_response, end_response
+from api import ping_response, start_response, move_response, end_response
+from gamestate import GameState
 
 
 @bottle.route('/')
@@ -59,17 +60,9 @@ def move():
     """
     print(json.dumps(data))
 
-    turn = data.get("turn")
+    game_state = GameState(data)
 
-    pick = turn % 4
-    if pick == 0:
-        direction = 'up'
-    elif pick == 1:
-        direction = 'right'
-    elif pick == 2:
-        direction = 'down'
-    else:
-        direction = 'left'
+    direction = game_state.move_to_food()
 
     return move_response(direction)
 
