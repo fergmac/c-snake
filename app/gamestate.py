@@ -44,6 +44,7 @@ class Snake:
     def get_tail(self):
         return self.body[-1]
 
+
 class Move:
     UP = "up"
     LEFT = "left"
@@ -54,7 +55,9 @@ class Move:
         self.direction = direction
         self.distance = distance
 
+
 class GameState:
+    NO_PATH = 10000
 
     def __init__(self, data):
         self.turn = data["turn"]
@@ -120,8 +123,8 @@ class GameState:
             end=target.as_tuple()
         )
 
-        distance = len(route)
         print(f"\nRoute found: {route}\n")
+        distance = len(route) if route else self.NO_PATH
 
         x_diff = route[1][0] - route[0][0]
         y_diff = route[1][1] - route[0][1]
@@ -136,4 +139,4 @@ class GameState:
             return Move(Move.DOWN, distance)
         else:
             print("FUCK WHAT DO WE DO")
-            return Move(Move.UP, 100000)
+            return Move(Move.UP, self.NO_PATH)
