@@ -73,7 +73,8 @@ class GameState:
         invalid_spaces = []
         for snake in self.snakes:
             for body in snake.body:
-                if not any(space.x == body.x and space.y == body.y for space in invalid_spaces):
+                if not any(space.x == body.x and space.y == body.y for space in invalid_spaces) and \
+                        not body == snake.get_tail():
                     invalid_spaces.append(body)
             # TODO - Do this better
             head = snake.get_head()
@@ -110,7 +111,7 @@ class GameState:
         return self.determine_route_to_target(self.you.get_tail()).direction
 
     def determine_route_to_target(self, target):
-        print(f"\nInvalid spaces: {self.invalid_spaces}"
+        print(f"\nInvalid spaces: {[space.as_tuple() for space in self.invalid_spaces]}"
               f"\nWidth: {self.board.width}",
               f"\nHeight: {self.board.height}",
               f"\nStart: {self.you.get_head().as_tuple()}",
