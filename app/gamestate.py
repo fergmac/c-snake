@@ -64,8 +64,11 @@ class GameState:
         # TODO - Only include possible moves from snakes bigger than you
         invalid_spaces = []
         for snake in self.snakes:
-            for body in snake.body:
-                if body not in invalid_spaces and body != self.you.get_tail():
+            snake_body = snake.body
+            if snake.id == self.you.id:
+                snake_body = snake_body[:-1]
+            for body in snake_body:
+                if body not in invalid_spaces:
                     invalid_spaces.append(body)
 
             # TODO - Do this better
