@@ -24,7 +24,7 @@ def right(coord):
 
 
 class Snake:
-    def __init__(self, snake_data, is_you=False):
+    def __init__(self, snake_data):
         self.id = snake_data["id"]
         self.name = snake_data["name"]
         self.health = snake_data["health"]
