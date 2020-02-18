@@ -58,11 +58,11 @@ def move():
     TODO: Using the data from the endpoint request object, your
             snake AI must choose a direction to move in.
     """
-    print(json.dumps(data))
 
     game_state = GameState(data)
 
     direction = game_state.move_to_food()
+    print(f"\nDirection selected: {direction}")
 
     return move_response(direction)
 
