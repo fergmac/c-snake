@@ -1,4 +1,4 @@
-from astar import astar
+from .astar import astar
 
 
 class Board:

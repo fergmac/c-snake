@@ -2,8 +2,8 @@ import json
 import os
 import bottle
 
-from api import ping_response, start_response, move_response, end_response
-from gamestate import GameState
+from .api import ping_response, start_response, move_response, end_response
+from .gamestate import GameState
 
 
 @bottle.route('/')
