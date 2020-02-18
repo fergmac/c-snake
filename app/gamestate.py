@@ -61,7 +61,7 @@ class GameState:
         invalid_spaces = []
         for snake in self.snakes:
             for body in snake.body:
-                self.invalid_spaces.append(body)
+                invalid_spaces.append(body)
         return invalid_spaces
 
     def is_bigger_than(self, snake):
