@@ -103,9 +103,9 @@ class GameState:
         elif x_diff == 1 and y_diff == 0:
             return self.RIGHT
         elif x_diff == 0 and y_diff == -1:
-            return self.DOWN
-        elif x_diff == 0 and y_diff == 1:
             return self.UP
+        elif x_diff == 0 and y_diff == 1:
+            return self.DOWN
         else:
             print("FUCK WHAT DO WE DO")
             return self.UP
