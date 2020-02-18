@@ -80,7 +80,11 @@ class GameState:
         return self.determine_route_to_target(self.you.get_tail())
 
     def determine_route_to_target(self, target):
-        print(f"\nInvalid spaces: {self.invalid_spaces}\n")
+        print(f"\nInvalid spaces: {self.invalid_spaces}"
+              f"\nWidth: {self.board.width}",
+              f"\nHeight: {self.board.height}",
+              f"\nStart: {self.you.get_head().as_tuple()}",
+              f"\nTarget: {target.as_tuple()}\n")
         route = astar(
             invalid_spaces=[space.as_tuple() for space in self.invalid_spaces],
             width=self.board.width,

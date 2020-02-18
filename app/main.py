@@ -1,7 +1,7 @@
 import json
 import os
 import bottle
-
+import time
 from .api import ping_response, start_response, move_response, end_response
 from .gamestate import GameState
 
@@ -52,18 +52,24 @@ def start():
 
 @bottle.post('/move')
 def move():
+    start_time = int(round(time.time() * 1000))
+
     data = bottle.request.json
 
     """
     TODO: Using the data from the endpoint request object, your
             snake AI must choose a direction to move in.
     """
+    print(json.dumps(data))
 
     game_state = GameState(data)
 
     direction = game_state.move_to_food()
-    print(f"\nDirection selected: {direction}")
+    print(f"\nDirection selected: {direction}\n")
 
+    end_time = int(round(time.time() * 1000))
+    duration = end_time - start_time
+    print(f"\n Time elapsed (ms): f{duration}\n")
     return move_response(direction)
 
 
