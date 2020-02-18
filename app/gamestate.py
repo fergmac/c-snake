@@ -70,7 +70,7 @@ class GameState:
                     invalid_spaces.append(body)
 
             # TODO - Do this better
-            if not snake.is_you():
+            if not snake.is_you:
                 head = snake.get_head()
                 if left(head) not in invalid_spaces:
                     invalid_spaces.append(left(head))
