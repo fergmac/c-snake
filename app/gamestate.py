@@ -29,7 +29,6 @@ class Snake:
         self.name = snake_data["name"]
         self.health = snake_data["health"]
         self.body = [(body_data["x"], body_data["y"]) for body_data in snake_data["body"]]
-        self.is_you = is_you
 
     def get_head(self):
         return self.body[0]
@@ -55,7 +54,7 @@ class GameState:
     def __init__(self, data):
         self.turn = data["turn"]
         self.board = Board(data["board"])
-        self.you = Snake(data["you"], True)
+        self.you = Snake(data["you"])
         self.snakes = [Snake(snake) for snake in data["board"]["snakes"]]
         self.food = [(food["x"], food["y"]) for food in data["board"]["food"]]
 
@@ -70,7 +69,7 @@ class GameState:
                     invalid_spaces.append(body)
 
             # TODO - Do this better
-            if not snake.is_you:
+            if snake.id != self.you.id:
                 head = snake.get_head()
                 if left(head) not in invalid_spaces:
                     invalid_spaces.append(left(head))
@@ -94,6 +93,8 @@ class GameState:
     def move_to_closest_food(self):
         best_move = None
 
+        # TODO - Handle no food case
+
         for food in self.food:
             possible_move = self.determine_route_to_target(food)
             if not best_move or possible_move.distance < best_move.distance:
@@ -102,6 +103,7 @@ class GameState:
         return best_move.direction
 
     def move_to_tail(self):
+        # TODO - Handle first few turns
         return self.determine_route_to_target(self.you.get_tail()).direction
 
     def determine_route_to_target(self, target):
